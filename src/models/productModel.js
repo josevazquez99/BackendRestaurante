@@ -5,6 +5,12 @@ const Producto = {
     const [filas] = await db.query('SELECT * FROM Producto');
     return filas;
   },
+  
+
+  obtenerPorId: async (id) => {
+    const [filas] = await db.query('SELECT * FROM Producto WHERE id = ?', [id]);
+    return filas[0];
+  },
 
   crear: async (nombre, descripcion, precio, categoria) => {
     const [resultado] = await db.query(

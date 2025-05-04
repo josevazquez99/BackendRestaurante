@@ -6,6 +6,7 @@ const Pedido = {
     try {
       await conn.beginTransaction();
 
+      // Crear el pedido con estado pendiente
       const [pedidoResult] = await conn.query(
         'INSERT INTO Pedido (cliente_id, estado) VALUES (?, ?)',
         [cliente_id, 'pendiente']
@@ -13,6 +14,7 @@ const Pedido = {
 
       const pedidoId = pedidoResult.insertId;
 
+      // Insertar los productos del carrito en la tabla Pedido_Producto
       for (const { producto_id, cantidad } of productos) {
         await conn.query(
           'INSERT INTO Pedido_Producto (pedido_id, producto_id, cantidad) VALUES (?, ?, ?)',

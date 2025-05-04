@@ -10,6 +10,38 @@ const productoController = {
     }
   },
 
+  agregarProductoCarrito: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const producto = await Producto.agregarProductoCarrito(id);
+      return res.json(producto);
+    } catch (err) {
+      return res.status(500).json({ mensaje: 'Error al agregar producto al carrito', error: err.message });
+    }
+  },
+  eliminarProductoCarrito: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const producto = await Producto.eliminarProductoCarrito(id);
+      return res.json(producto);
+    } catch (err) {
+      return res.status(500).json({ mensaje: 'Error al eliminar producto del carrito', error: err.message });
+    }
+  },
+
+  listarPorId: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const producto = await Producto.obtenerPorId(id);
+      if (!producto) {
+        return res.status(404).json({ mensaje: 'Producto no encontrado' });
+      }
+      return res.json(producto);
+    } catch (err) {
+      return res.status(500).json({ mensaje: 'Error al obtener producto', error: err.message });
+    }
+  },
+
   crear: async (req, res) => {
     const { nombre, descripcion, precio, categoria } = req.body;
 

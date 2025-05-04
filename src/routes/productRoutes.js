@@ -6,6 +6,8 @@ const { verificarAdministrador } = require('../middlewares/rolMiddleware');
 
 router.get('/', productoController.listar);
 
+router.get('/:id', productoController.listarPorId);
+
 router.post('/', verificarToken, verificarAdministrador, productoController.crear);
 
 router.delete('/:id', verificarToken, verificarAdministrador, productoController.eliminar);

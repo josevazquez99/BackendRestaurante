@@ -24,9 +24,8 @@ const Carrito = {
     const [rows] = await db.query(`
       SELECT c.producto_id, p.nombre, p.precio, c.cantidad
       FROM Carrito c
-      JOIN Producto p ON c.producto_id = p.id
-      WHERE c.usuario_id = ?
-    `, [usuarioId]);
+      LEFT JOIN Producto p ON c.producto_id = p.id
+      WHERE c.usuario_id = ?`, [usuarioId]);
     return rows;
   },
 

@@ -25,20 +25,29 @@ const cartController = {
   },
 
   eliminar: async (req, res) => {
-    const usuarioId = req.usuario.id;
-    const { producto_id } = req.params;
-    try {
-      await Carrito.eliminarProducto(usuarioId, producto_id);
-      res.json({ mensaje: 'Producto eliminado del carrito' });
-    } catch (err) {
-      res.status(500).json({ mensaje: 'Error al eliminar producto', error: err.message });
-    }
+      const usuarioId = req.usuario.id;
+      const { producto_id } = req.params;
+    console.log("Producto ID recibido para eliminar:", producto_id); 
+      if (!producto_id || isNaN(producto_id)) {
+          return res.status(400).json({ mensaje: "ID del producto no válido." });
+      }
+
+      try {
+          await Carrito.eliminarProducto(usuarioId, parseInt(producto_id));
+          res.json({ mensaje: "Producto eliminado del carrito" });
+      } catch (err) {
+          res.status(500).json({ mensaje: "Error al eliminar producto", error: err.message });
+      }
   },
+
+
 
   confirmarPedido: async (req, res) => {
     const usuarioId = req.usuario.id;
     try {
-      const productos = await Carrito.obtenerCarritoUsuario(usuarioId);
+console.log("Consultando carrito para usuario ID:", usuarioId);
+const productos = await Carrito.obtenerCarritoUsuario(usuarioId);
+console.log("Productos obtenidos del carrito:", productos);
 
       if (productos.length === 0) {
         return res.status(400).json({ mensaje: 'El carrito está vacío' });

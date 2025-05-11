@@ -8,7 +8,7 @@ const cartController = {
 
     try {
       await Carrito.agregarProducto(usuarioId, producto_id, cantidad);
-      res.json({ mensaje: 'Producto agregado al carrito' });
+      return res.status(201).json({ mensaje: 'Producto agregado al carrito' });
     } catch (err) {
       res.status(500).json({ mensaje: 'Error al agregar al carrito', error: err.message });
     }

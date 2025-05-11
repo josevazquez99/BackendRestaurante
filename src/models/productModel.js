@@ -21,21 +21,19 @@ const Producto = {
   },
 
   eliminar: async (id) => {
-    await db.query('DELETE FROM Producto WHERE id = ?', [id]);
+    const [resultado] = await db.query('DELETE FROM Producto WHERE id = ?', [id]);
+    return resultado;
   },
-  actualizar: (id, datos) => {
+  actualizar: async (id, datos) => {
     const { nombre, descripcion, precio, categoria } = datos;
-    return new Promise((resolve, reject) => {
-      db.query(
-        'UPDATE Producto SET nombre = ?, descripcion = ?, precio = ?, categoria = ? WHERE id = ?',
-        [nombre, descripcion, precio, categoria, id],
-        (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        }
-      );
-    });
+    const [resultado] = await db.query(
+      "UPDATE Producto SET nombre = ?, descripcion = ?, precio = ?, categoria = ? WHERE id = ?",
+      [nombre, descripcion, precio, categoria, id]
+    );
+
+    return resultado; 
   }
+
 };
 
 module.exports = Producto;

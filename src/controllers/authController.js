@@ -87,7 +87,8 @@ const authController = {
         usuario: {
           id: usuario.id,
           nombre: usuario.nombre,
-          email: usuario.email
+          email: usuario.email,
+          rol: usuario.rol
         }
       });
     } catch (err) {

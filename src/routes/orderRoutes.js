@@ -6,6 +6,5 @@ const { verificarToken } = require('../middlewares/authMiddleware');
 router.post('/', verificarToken, pedidoController.crearPedido);
 router.get('/', verificarToken, pedidoController.listarPedidos);
 router.get('/:id', verificarToken, pedidoController.verDetallePedido);
-router.put('/:id/estado', verificarToken, pedidoController.actualizarEstado);
-
+router.get('/:id/mesa', verificarToken, pedidoController.comprobarMesa);
 module.exports = router;

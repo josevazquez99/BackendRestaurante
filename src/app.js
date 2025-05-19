@@ -15,10 +15,11 @@ const productoRoutes = require('./routes/productRoutes');
 app.use('/api/productos', productoRoutes);
 const pedidoRoutes = require('./routes/orderRoutes');
 app.use('/api/pedidos', pedidoRoutes);
-const reservaRoutes = require('./routes/bookRoutes');
-app.use('/api/reservas', reservaRoutes);
 const carritoRoutes = require('./routes/cartRoutes');
 app.use('/api/carrito', carritoRoutes);
+const resenaRoutes = require('./routes/reviewRoutes');
+app.use('/api/resenas', resenaRoutes);
+
 
 
 

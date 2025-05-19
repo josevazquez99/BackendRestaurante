@@ -54,6 +54,7 @@ const authController = {
       res.status(500).json({ mensaje: 'Error en el servidor', error: err.message });
     }
   },
+  
 
   login: async (req, res) => {
     const { email, password } = req.body;

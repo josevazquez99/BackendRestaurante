@@ -1,27 +1,9 @@
-// app.js
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2');
+// Ya no necesitas importar mysql aquí
 require('dotenv').config();
 
 const app = express();
-
-// Configurar conexión a MySQL
-const connection = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT,
-});
-
-connection.connect(err => {
-  if (err) {
-    console.error('Error al conectar a MySQL:', err);
-    process.exit(1); // Salir si no se conecta
-  }
-  console.log('Conectado a la base de datos MySQL');
-});
 
 // Middlewares
 app.use(cors());
@@ -45,5 +27,4 @@ app.get('/', (req, res) => {
   res.send('API Restaurante funcionando 🍽️');
 });
 
-// Exportar app y la conexión para usar en controladores
-module.exports = { app, connection };
+module.exports = app;

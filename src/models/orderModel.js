@@ -8,14 +8,14 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
 
     // Elegir camarero si no se recibe camarero_id
     if (!camarero_id) {
-      const [camareros] = await conn.query(
+      const [camareros] = await conn.execute(
         'SELECT id FROM Camarero ORDER BY RAND() LIMIT 1'
       );
 
       if (camareros.length > 0) {
         camarero_id = camareros[0].id;
       } else {
-        const [result] = await conn.query('INSERT INTO Camarero () VALUES ()');
+        const [result] = await conn.execute('INSERT INTO Camarero () VALUES ()');
         camarero_id = result.insertId;
       }
     }
@@ -24,7 +24,7 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
     let total = 0;
     for (const { producto_id, cantidad } of productos) {
       // Obtener precio del producto
-      const [rows] = await conn.query('SELECT precio FROM Producto WHERE id = ?', [producto_id]);
+      const [rows] = await conn.execute('SELECT precio FROM Producto WHERE id = ?', [producto_id]);
       if (rows.length === 0) {
         throw new Error(`Producto con id ${producto_id} no encontrado`);
       }
@@ -33,7 +33,7 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
     }
 
     // Crear pedido con total calculado
-    const [pedidoResult] = await conn.query(
+    const [pedidoResult] = await conn.execute(
       'INSERT INTO Pedido (cliente_id, mesa_id, camarero_id, total) VALUES (?, ?, ?, ?)',
       [cliente_id, mesa_id, camarero_id, total]
     );
@@ -42,7 +42,7 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
 
     // Insertar productos
     for (const { producto_id, cantidad } of productos) {
-      await conn.query(
+      await conn.execute(
         'INSERT INTO Pedido_Producto (pedido_id, producto_id, cantidad) VALUES (?, ?, ?)',
         [pedidoId, producto_id, cantidad]
       );
@@ -50,7 +50,7 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
 
     // Actualizar mesa si corresponde
     if (mesa_id !== null) {
-      const [updateResult] = await conn.query(
+      const [updateResult] = await conn.execute(
         'UPDATE Mesa SET pedido_id = ? WHERE id = ?',
         [pedidoId, mesa_id]
       );
@@ -74,7 +74,7 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
 
 
   obtenerTodos: async () => {
-    const [rows] = await db.query(`
+    const [rows] = await db.execute(`
       SELECT p.id, p.cliente_id, p.fecha_hora,
              u.nombre AS nombre_usuario
       FROM Pedido p
@@ -84,18 +84,18 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
     return rows;
   },
   comprobarMesa: async (mesa_id) => {
-    const [rows] = await db.query(`
+    const [rows] = await db.execute(`
       SELECT * FROM Mesa WHERE id = ?
     `, [mesa_id]);
     return rows[0];
   },
 
   obtenerPorId: async (id) => {
-    const [pedido] = await db.query(`
+    const [pedido] = await db.execute(`
       SELECT * FROM Pedido WHERE id = ?
     `, [id]);
 
-    const [productos] = await db.query(`
+    const [productos] = await db.execute(`
       SELECT pp.producto_id, p.nombre, p.precio, pp.cantidad
       FROM Pedido_Producto pp
       JOIN Producto p ON pp.producto_id = p.id

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/userModel');
 const db = require('../config/db');
+const { enviarCorreoRegistro } = require('../config/mailer'); 
 
 const authController = {
   checkEmail: async (req, res) => {
@@ -47,7 +48,7 @@ const authController = {
       } else if (rol === 'administrador') {
         await db.query('INSERT INTO Administrador (id) VALUES (?)', [nuevoUsuarioId]);
       }
-  
+      await enviarCorreoRegistro(email, nombre);
       res.status(201).json({ mensaje: 'Usuario registrado correctamente' });
     } catch (err) {
       console.error('Error en registro:', err);

@@ -1,6 +1,23 @@
 const db = require('../config/db');
 
 const Pedido = {
+/**
+ * Creates a new order in the system.
+ *
+ * This function handles the creation of an order for a given client, including
+ * selecting or assigning a waiter, calculating the total cost based on the
+ * provided products and their quantities, and updating the corresponding table
+ * if necessary. It also inserts the order and its associated products into
+ * the database.
+ *
+ * @param {number} cliente_id - The ID of the client placing the order.
+ * @param {Array<{producto_id: number, cantidad: number}>} productos - A list of products with their respective quantities.
+ * @param {number|null} mesa_id - The ID of the table for the order, if applicable.
+ * @param {number|null} [camarero_id=null] - The ID of the waiter assigned to the order. If not provided, one will be assigned randomly.
+ * @returns {Promise<number>} The ID of the newly created order.
+ * @throws {Error} If any database operation fails or if a product or table is not found.
+ */
+
 crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
   const conn = await db.getConnection();
   try {
@@ -73,6 +90,12 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
 
 
 
+  /**
+   * Retrieves all orders from the database, sorted by date in descending order (newest first).
+   *
+   * @returns {Promise<Array<{id: number, cliente_id: number, fecha_hora: string, nombre_usuario: string}>>}
+   *          A list of orders with their respective IDs, client IDs, timestamps, and client names.
+   */
   obtenerTodos: async () => {
     const [rows] = await db.execute(`
       SELECT p.id, p.cliente_id, p.fecha_hora,
@@ -83,6 +106,14 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
     `);
     return rows;
   },
+  /**
+   * Checks the existence of a table in the database by its ID.
+   *
+   * @param {number} mesa_id - The ID of the table to be checked.
+   * @returns {Promise<Object|null>} The table object if found, otherwise null.
+   * @throws {Error} If any database operation fails.
+   */
+
   comprobarMesa: async (mesa_id) => {
     const [rows] = await db.execute(`
       SELECT * FROM Mesa WHERE id = ?
@@ -90,6 +121,14 @@ crear: async (cliente_id, productos, mesa_id, camarero_id = null) => {
     return rows[0];
   },
 
+
+  /**
+   * Retrieves a single order with its associated products from the database by its ID.
+   *
+   * @param {number} id - The ID of the order to retrieve.
+   * @returns {Promise<Object>} An object containing the order's details, including its products.
+   * @throws {Error} If the order is not found or any database operation fails.
+   */
   obtenerPorId: async (id) => {
     const [pedido] = await db.execute(`
       SELECT * FROM Pedido WHERE id = ?
